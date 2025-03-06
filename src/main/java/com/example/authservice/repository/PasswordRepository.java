@@ -4,7 +4,6 @@ import com.example.authservice.model.PasswordEntity;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.*;
 
-
 @Repository
 public interface PasswordRepository extends JpaRepository<PasswordEntity, Integer> {
 

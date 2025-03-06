@@ -1,0 +1,204 @@
+openapi: 3.0.0
+info:
+  title: Калькулятор депозитных продуктов
+  version: 2.0.1
+servers:
+  - url: https://localhost:18080/api/v2/auth
+tags:
+  - name: Auth
+    description: Контракты для авторизации, аутентификации
+paths:
+  /login:
+    post:
+      summary: Метод аутентификации пользователя
+      tags:
+        - Auth
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/LoginRequestDto'
+
+      responses:
+        '200':
+          description: Успешная аутентификация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseDto'
+        '400':
+          description: Данные не валидны
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+              examples:
+                example1:
+                  summary: Пример ошибки с кодом 1004
+                  value:
+                    code: 1004
+                    message: 'Ошибка запроса,  отсутствуют следующие параметры запроса: login.'
+                example2:
+                  summary: Пример ошибки с кодом 1005
+                  value:
+                    code: 1005
+                    message: 'Ошибка запроса,  некорректные данные в следующих параметрах: login - %№25235аыва.'
+        '404':
+          description: Пользователь не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+              example:
+                сode: 1001
+                message: Пользователь не найден
+        5XX:
+          description: Ошибка на стороне сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+              example:
+                сode: 500
+                message: Внутреняя ошибка сервера или базы данных
+  /refresh:
+    post:
+      summary: Метод обновления токенов
+      tags:
+        - Auth
+      operationId: getNewTokens
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenDto'
+      responses:
+        '200':
+          description: Успешное обновление токенов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseDto'
+        '400':
+          description: Данные не валидны
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+              example:
+                сode: 1004
+                message: 'Ошибка запроса некорректные данные '
+        '401':
+          description: RefreshToken не валиден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+              example:
+                сode: 1003
+                message: refreshToken не валиден
+        5XX:
+          description: Ошибка на стороне сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+              example:
+                сode: 500
+                message: Внутреняя ошибка сервера или базы данных
+  /logout:
+    post:
+      summary: Метод выхода из учетной записи пользователя
+      tags:
+        - Auth
+      operationId: logout
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          example: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJyb2xlcyI6WyJvcGVyYXRvciJdLCJleHAiOjIwMTU3NTAyMzMsImlhdCI6MTcxNTc1MDIzM30.cb-NJLdr0KKHbh5Eijvk3PBepXAOala_9XeAJMQMLXwJz_i7L4cxmrKEvf0iT3HWjxSEQGbaazEFFXNp1_pQd8EHgWRmk9W6Mzjc8v7rO2_nIWd-oukO4OBDSWJ-q3i3yWhypryD3pYF_-WxISNcztrRNAPl6rq-jIodoz3AzC18NI4RDZ6MsPMyw71XhETfu6T81fS7GcV9XDr41KSFJCn0fdZTg9HFcC28HiYjnvu3VG5CnTRLJNwkcEdm3CE8Cqr2xM2M17NbWWxWdYCMPkVDqiF8hI-JJwLndYJCNpq2rfDYk8ei8cRHVeD8QYsW01ntaffOFXCX0rC1gPI8Cw
+      responses:
+        '200':
+          description: Успешный выход из учетной записи
+        '400':
+          description: Данные не валидны
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+              example:
+                сode: 1004
+                message: 'Ошибка запроса некорректные данные '
+        '401':
+          description: Не авторизован пользователь
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+              example:
+                сode: 1002
+                message: AccessToken не валиден
+        5XX:
+          description: Ошибка на стороне сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+              example:
+                сode: 500
+                message: Внутреняя ошибка сервера или базы данных
+
+components:
+  schemas:
+    ApiErrorResponseDto:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+    ApiResponseDto:
+      type: object
+      required:
+        - accessToken
+        - refreshToken
+        - flagGuideShown
+      properties:
+        accessToken:
+          type: string
+          example: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJyb2xlcyI6WyJvcGVyYXRvciJdLCJleHAiOjIwMTU3NTAyMzMsImlhdCI6MTcxNTc1MDIzM30.cb-NJLdr0KKHbh5Eijvk3PBepXAOala_9XeAJMQMLXwJz_i7L4cxmrKEvf0iT3HWjxSEQGbaazEFFXNp1_pQd8EHgWRmk9W6Mzjc8v7rO2_nIWd-oukO4OBDSWJ-q3i3yWhypryD3pYF_-WxISNcztrRNAPl6rq-jIodoz3AzC18NI4RDZ6MsPMyw71XhETfu6T81fS7GcV9XDr41KSFJCn0fdZTg9HFcC28HiYjnvu3VG5CnTRLJNwkcEdm3CE8Cqr2xM2M17NbWWxWdYCMPkVDqiF8hI-JJwLndYJCNpq2rfDYk8ei8cRHVeD8QYsW01ntaffOFXCX0rC1gPI8Cw
+        refreshToken:
+          type: string
+          example: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJqd3RfaWQiOiJhNzY2MDJiOC03MmZkLTQ0OTEtYTNiNy1kYjJkYWNkMDBhZGMiLCJleHAiOjIwMTU3NDk5MDksImlhdCI6MTcxNTc0OTkwOX0.dj-NMVEJ8BhgzPhLybNJ92_s-rStCIM1yphL40lc3Zb8MMeSK7q6lvWZL9jYlSrN_hfLEiMutVmTtv6pInQ-iclNheo_K3--qWaRQhk3ROVoDbUhFXOeI6cksUlx7UDtxzzCJ5UjPSK-fjBrZTL8d0iMoHyNBmGVuyCcCHluyGAgr0kNWmmd6nJFoHE46Nq4MNsNH_vw66cFFoFtTu10d-QiZb6_UFMCcLfushDyjccprjTDeBMpw3oy_HUNnEfr3P_JYWXQMEm8oEcRfrmWyK3uXo2nyfmn1iLT-ArxiDUHq2s-syeSl9LBT9c4K2bq7hYqzRxSZUmQppGIb_CKng
+        flagGuideShown:
+          type: boolean
+          example: false
+    LoginRequestDto:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          pattern: ^[a-zA-Z0-9]+$
+          example: drazdobarov
+        password:
+          type: string
+          pattern: ^[a-zA-Z0-9]+$
+          example: dWEdsafa09we8ew
+    RefreshTokenDto:
+      type: object
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMTIzIiwiaWF0IjoxNjE5NzA4NDAwLCJleHAiOjE2MTk3OTQ4MDAsImp0aSI6ImFiYzEyM2RlZjQ1NiJ9.Ht_Ks-Ks_Ks_Ks_Ks_Ks_Ks_Ks_Ks
+

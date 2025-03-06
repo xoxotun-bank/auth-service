@@ -9,6 +9,7 @@ package com.example.authservice.swagger.api;
 import java.io.*;
 import java.util.*;
 
+import javax.validation.*;
 
 import com.example.authservice.swagger.dto.ApiResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import org.springframework.http.*;
 import org.springframework.validation.annotation.*;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.authservice.swagger.dto.*;
 
 @Validated
 public interface RefreshApi {
