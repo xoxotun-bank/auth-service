@@ -6,6 +6,8 @@ import lombok.extern.slf4j.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.authservice.service.*;
+import com.example.authservice.swagger.api.*;
 
 @Slf4j
 @RequiredArgsConstructor

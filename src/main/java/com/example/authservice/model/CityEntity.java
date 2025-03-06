@@ -1,6 +1,7 @@
 package com.example.authservice.model;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 
 @Entity(name = "cities")
@@ -8,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CityEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

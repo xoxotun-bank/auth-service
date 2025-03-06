@@ -1,6 +1,7 @@
 package com.example.authservice.model;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 
 @Entity(name = "passwords")

@@ -1,9 +1,8 @@
 package com.example.authservice.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 @Entity(name = "roles")
 @Data
@@ -17,5 +16,5 @@ public class RoleEntity {
 
     @Column(name = "name")
     private String name;
-}
 
+}
